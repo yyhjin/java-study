@@ -19,18 +19,11 @@ public class GoodsApp {
 				+ ", 팔린 개수: " + camera.countSold);
 */
 		
-		
 		// 정보은닉, 캡슐화 (private, Getter, Setter)
 		camera.setName("Nikon");
 		camera.setPrice(400000);
 		camera.setCountStock(30);
 		camera.setCountSold(50);
-		
-		System.out.println(
-				"상품이름 : " + camera.getName()
-				+ ", 가격: " + camera.getPrice()
-				+ ", 재고개수: " + camera.getCountStock()
-				+ ", 팔린 개수: " + camera.getCountSold());
 
 		// 정보은닉(데이터 보호) - setter 함수에서 코드 짜서 막아줌
 		camera.setPrice(-1);
@@ -40,7 +33,12 @@ public class GoodsApp {
 		Goods goods2 = new Goods();
 		Goods goods3 = new Goods();
 		System.out.println(Goods.countOfGoods);
+	
+		camera.showInfo();
 		
+		camera.setPrice(500000);
+		int discountPrice = camera.calcDiscountPrice(0.5);
+		System.out.println(discountPrice);
 	}
 
 }

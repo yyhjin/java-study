@@ -25,19 +25,6 @@ public class WatchTV {
 		tv.power(false);
 		tv.status();
 		
-		
-//		tv.channel(255);
-//		tv.volume(100);
-//		tv.status();
-//		
-//		tv.channel(true);
-//		tv.volume(true);
-//		tv.status();
-//		
-//		tv.channel(false);
-//		tv.volume(false);
-//		tv.status();
-		
 	}
 
 }

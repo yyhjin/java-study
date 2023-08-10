@@ -16,8 +16,10 @@ public class TV {
 	}
 	
 	public void channel(boolean up) {
-		if(up)
-			this.channel = (channel+1)%256;
+		if(up) {
+			if(channel == 255) channel = 1;
+			else channel++;
+		}
 		else {
 			if(channel == 0) channel = 255;
 			else channel--;;
@@ -25,7 +27,10 @@ public class TV {
 	}
 	
 	public void channel(int channel) {
-		this.channel = channel%256;
+		if(channel > 255) 
+			this.channel = 1;
+		else if(channel == 0)
+			this.channel = 255;
 	}
 	
 	public void volume(boolean up) {
@@ -38,7 +43,8 @@ public class TV {
 	}
 
 	public void volume(int volume) {
-		this.volume = volume%101;
+		if(volume > 100) 
+			this.volume = 0;
 	}
 	
 	public void status() {

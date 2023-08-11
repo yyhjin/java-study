@@ -8,9 +8,12 @@ public class MyClassTest {
 		try {
 			MyClass myClass = new MyClass();
 			myClass.danger();
-		} catch (IOException e) {
-			e.printStackTrace();;
-		} catch (MyException e) {
+//		} catch (IOException e) {
+//			e.printStackTrace();;
+//		} catch (MyException e) {
+//			e.printStackTrace();
+//		}
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		

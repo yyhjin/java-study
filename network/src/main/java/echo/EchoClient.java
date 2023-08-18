@@ -63,6 +63,9 @@ public class EchoClient {
 				if(socket != null && !socket.isClosed()) {
 					socket.close();					
 				}
+				if(scanner != null) {
+					scanner.close();
+				}
 			} catch (IOException e) {
 				e.printStackTrace();
 			}

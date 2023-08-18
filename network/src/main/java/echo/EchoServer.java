@@ -12,7 +12,7 @@ import java.net.SocketException;
 
 public class EchoServer {
 
-	private static final int PORT = 8000;
+	public static final int PORT = 8000;
 	
 	public static void main(String[] args) {
 		ServerSocket serverSocket = null;
@@ -34,26 +34,21 @@ public class EchoServer {
 				int remotePort = remoteInetSocketAddress.getPort();
 				log("connected by client[" + remoteHostAddress + ":" + remotePort + "]");
 			
-								
-				while(true) {
-					// 4. IO Stream 받아오기
-					PrintWriter pw = new PrintWriter(new OutputStreamWriter(socket.getOutputStream(), "utf-8"), true);  // true는 auto flush 옵션
-					BufferedReader br = new BufferedReader(new InputStreamReader(socket.getInputStream(), "utf-8"));   // read는 flush 없음
+				PrintWriter pw = new PrintWriter(new OutputStreamWriter(socket.getOutputStream(), "utf-8"), true); // true는 auto flush 옵션
+				BufferedReader br = new BufferedReader(new InputStreamReader(socket.getInputStream(), "utf-8")); // read는 flush 없음
 
-					// 5. 데이터 읽기
-					while(true) {
-						String data = br.readLine();			
-						if(data == null) {
-							log("closed by client");
-							break;
-						}
-						
-						log("received: " + data);
-						
-						// 6. 데이터 쓰기
-						pw.println(data);
+				// 5. 데이터 읽기
+				while (true) {
+					String data = br.readLine();
+					if (data == null) {
+						log("closed by client");
+						break;
 					}
-					
+
+					log("received: " + data);
+
+					// 6. 데이터 쓰기
+					pw.println(data);
 				}
 				
 			} catch (SocketException e) {

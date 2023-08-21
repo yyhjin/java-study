@@ -10,7 +10,7 @@ import java.net.Socket;
 import java.nio.file.Files;
 
 public class RequestHandler extends Thread {
-	private static final String DOCUMENT_ROOT = "././webapp";
+	private static final String DOCUMENT_ROOT = "./webapp";
 	private Socket socket;
 	
 	public RequestHandler( Socket socket ) {
@@ -87,22 +87,40 @@ public class RequestHandler extends Thread {
 		}			
 	}
 
-	private void responseStatic404Error(OutputStream outputStream, String protocol) {
+	private void responseStatic404Error(OutputStream outputStream, String protocol) throws IOException {
 		// HTTP/1.1 404 File Not Found\r\n
 		// Content-Type:text/html; charset=utf-8\r\n
 		// \r\n
-		// /error/404.html 내용 
+		// /error/404.html 내용
+		File file = new File(DOCUMENT_ROOT + "/error/404.html");
+		
+		byte[] body = Files.readAllBytes(file.toPath());
+		String contentType = Files.probeContentType(file.toPath());
+		
+		outputStream.write("HTTP/1.1 404 File Not Found\r\n".getBytes("UTF-8"));
+		outputStream.write(("Content-Type:"+ contentType + "; charset=utf-8\r\n").getBytes("UTF-8"));
+		outputStream.write("\r\n".getBytes());
+		outputStream.write(body);
 	}
 
-	private void responseStatic400Error(OutputStream outputStream, String string) {
+	private void responseStatic400Error(OutputStream outputStream, String string) throws IOException {
 		// HTTP/1.1 400 Bad Request\r\n
 		// Content-Type:text/html; charset=utf-8\r\n
 		// \r\n
-		// /error/400.html 내용 
+		// /error/400.html 내용
+		
+		File file = new File(DOCUMENT_ROOT + "/error/400.html");
+		
+		byte[] body = Files.readAllBytes(file.toPath());
+		String contentType = Files.probeContentType(file.toPath());
+		
+		outputStream.write("HTTP/1.1 400 Bad Request\r\n".getBytes("UTF-8"));
+		outputStream.write(("Content-Type:"+ contentType + "; charset=utf-8\r\n").getBytes("UTF-8"));
+		outputStream.write("\r\n".getBytes());
+		outputStream.write(body);
 	}
 
 	private void responseStaticResource(OutputStream outputStream, String url, String protocol) throws IOException {
-		
 		// default(welcome) file
 		if("/".equals(url)) {
 			url = "/index.html";
@@ -111,7 +129,7 @@ public class RequestHandler extends Thread {
 		File file = new File(DOCUMENT_ROOT + url);
 		if(!file.exists()) {
 			System.out.println("404 File Not Found: "+ url);
-//			responseStatic400Error(outputStream, protocol);
+			responseStatic404Error(outputStream, protocol);
 			return;
 		}
 		
@@ -123,7 +141,6 @@ public class RequestHandler extends Thread {
 		outputStream.write("HTTP/1.1 200 OK\r\n".getBytes("UTF-8"));
 		outputStream.write(("Content-Type:"+ contentType + "; charset=utf-8\r\n").getBytes("UTF-8"));
 		outputStream.write("\r\n".getBytes());
-//		outputStream.write("<h1>이 페이지가 잘 보이면 실습과제 SimpleHttpServer를 시작할 준비가 된 것입니다.</h1>".getBytes("UTF-8"));
 		outputStream.write(body);
 		
 	}

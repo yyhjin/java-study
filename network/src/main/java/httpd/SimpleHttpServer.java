@@ -16,7 +16,7 @@ public class SimpleHttpServer {
 		try {
 			// 1. Create Server Socket
 			serverSocket = new ServerSocket();
-			   
+			
 			// 2. Bind
 			String localhost = InetAddress.getLocalHost().getHostAddress();
 			serverSocket.bind(new InetSocketAddress("0.0.0.0", PORT));

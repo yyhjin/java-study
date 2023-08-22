@@ -35,13 +35,26 @@ public class ChatWindow {
 		buttonSend.setForeground(Color.WHITE);
 		buttonSend.addActionListener( new ActionListener() {
 			@Override
-			public void actionPerformed( ActionEvent actionEvent ) {
+			public void actionPerformed( ActionEvent e ) {
 				sendMessage();
 			}
 		});
 
+		// 위 코드 이렇게 줄일 수 있음
+//		buttonSend.addActionListener((ActionEvent e) -> {
+//		});
+
 		// Textfield
 		textField.setColumns(80);
+		textField.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyPressed(KeyEvent e) {
+				char keyCode = e.getKeyChar();
+				if(keyCode == KeyEvent.VK_ENTER) {
+					sendMessage();
+				}
+			}
+		});
 
 		// Pannel
 		pannel.setBackground(Color.LIGHT_GRAY);
@@ -56,20 +69,48 @@ public class ChatWindow {
 		// Frame
 		frame.addWindowListener(new WindowAdapter() {
 			public void windowClosing(WindowEvent e) {
-				System.exit(0);
+//				System.exit(0);
+				finish();
 			}
 		});
 		frame.setVisible(true);
 		frame.pack();
+		
+		// IOStream 받아오기
+		// ChatClientThread 생성하고 실행
+		new ChatClientThread().start();
+	}
+	
+	private void finish() {
+		// quit 프로토콜 구현
+		
+		
+		// exit java(JVM)
+		System.exit(0);
 	}
 	
 	private void sendMessage() {
+		String message = textField.getText();
+		if(!"".equals(message)) {
+			System.out.println("메세지 보내는 프로토콜 구현 : " + message);
+			textField.setText("");
+
+			// ChatClientThread에서 서버로부터 받은 메세지가 있다고 가정하고
+			updateTextArea("마이콜 : "+message);
+		}
+		textField.requestFocus();
+	}
+	
+	private void updateTextArea(String message) {
+		textArea.append(message);
+		textArea.append("\n");
 	}
 	
 	private class ChatClientThread extends Thread {
 		
 		@Override
 		public void run() {
+			updateTextArea("안녕!");
 		}
 		
 	}

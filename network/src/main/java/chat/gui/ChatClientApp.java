@@ -33,9 +33,6 @@ public class ChatClientApp {
 			new ChatWindow(name).show();
 		}
 		
-		// 4. 
-
-		new ChatWindow(name).show();
 	}
 
 }

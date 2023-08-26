@@ -12,6 +12,11 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
+import java.net.Socket;
 
 public class ChatWindow {
 
@@ -20,13 +25,19 @@ public class ChatWindow {
 	private Button buttonSend;
 	private TextField textField;
 	private TextArea textArea;
+	
+	private PrintWriter printWriter;
+	private Socket socket;
 
-	public ChatWindow(String name) {
+	public ChatWindow(String name, Socket socket, PrintWriter printWriter) {
 		frame = new Frame(name);
 		pannel = new Panel();
 		buttonSend = new Button("Send");
 		textField = new TextField();
 		textArea = new TextArea(30, 80);
+		
+		this.socket = socket;
+		this.printWriter = printWriter;
 	}
 
 	public void show() {
@@ -69,7 +80,6 @@ public class ChatWindow {
 		// Frame
 		frame.addWindowListener(new WindowAdapter() {
 			public void windowClosing(WindowEvent e) {
-//				System.exit(0);
 				finish();
 			}
 		});
@@ -83,7 +93,14 @@ public class ChatWindow {
 	
 	private void finish() {
 		// quit 프로토콜 구현
-		
+		printWriter.println("quit");
+		try {
+			if (socket != null) {
+				socket.close();
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 		
 		// exit java(JVM)
 		System.exit(0);
@@ -91,12 +108,15 @@ public class ChatWindow {
 	
 	private void sendMessage() {
 		String message = textField.getText();
+		if("quit".equals(message)) {
+			finish();
+			return;
+		}
 		if(!"".equals(message)) {
-			System.out.println("메세지 보내는 프로토콜 구현 : " + message);
 			textField.setText("");
 
+			printWriter.println("message:" + message);
 			// ChatClientThread에서 서버로부터 받은 메세지가 있다고 가정하고
-			updateTextArea("마이콜 : "+message);
 		}
 		textField.requestFocus();
 	}
@@ -110,7 +130,23 @@ public class ChatWindow {
 		
 		@Override
 		public void run() {
-			updateTextArea("안녕!");
+			try {
+				updateTextArea("채팅 서버에 입장했습니다!\n");
+				
+				BufferedReader br = new BufferedReader(new InputStreamReader(socket.getInputStream(), "utf-8"));
+				
+				while (true) {
+					String data = br.readLine();
+					if (data == null) {
+						break;
+					}
+				
+					updateTextArea(data);
+				}
+				
+			} catch (IOException e) {
+				updateTextArea("error: " + e);				
+			}
 		}
 		
 	}
